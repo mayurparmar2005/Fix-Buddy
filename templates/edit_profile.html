@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Fix Buddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            animation: slideUp 0.45s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .avatar-circle {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .card-header h2 {
+            font-size: 20px;
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        .card-header p {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 22px 0;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .field input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
+        }
+
+        .flash-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .flash-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #4CAF50, #2e7d32);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.45);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: #888;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: #4CAF50;
+        }
+
+        .pass-hint {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="avatar-circle">{{ user.name[0] | upper }}</div>
+            <div>
+                <h2>Edit Profile</h2>
+                <p>{{ user.email }}</p>
+            </div>
+        </div>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash-{{ 'error' if category == 'error' else 'success' }}">
+            <i class="fa-solid fa-{{ 'circle-exclamation' if category == 'error' else 'circle-check' }}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/edit-profile">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <!-- Personal Info -->
+            <div class="section-label"><i class="fa-solid fa-user"></i> &nbsp; Personal Info</div>
+
+            <div class="field">
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{ user.name }}" required placeholder="Full Name">
+            </div>
+            <div class="field">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" value="{{ user.phone or '' }}" placeholder="10-digit phone"
+                    pattern="[0-9]{10}">
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Change Password -->
+            <div class="section-label"><i class="fa-solid fa-lock"></i> &nbsp; Change Password</div>
+
+            <div class="field">
+                <label>Current Password <span class="u-danger-asterisk">*</span></label>
+                <input type="password" name="current_password" required placeholder="Enter your current password" autocomplete="current-password">
+            </div>
+            <div class="field">
+                <label>New Password <span class="u-optional-label">(optional)</span></label>
+                <input type="password" name="new_password" placeholder="Leave blank to keep current" autocomplete="new-password">
+                <p class="pass-hint">Minimum 6 characters if changing.</p>
+            </div>
+
+            <button type="submit" class="save-btn">
+                <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save Changes
+            </button>
+        </form>
+
+        <a href="/profile" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Profile
+        </a>
+    </div>
+
+</body>
+
+</html>

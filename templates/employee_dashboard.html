@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs | Fix Buddy Partner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding-bottom: 80px;
+        }
+
+        /* HEADER STYLES */
+        .partner-header {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 30px 20px 80px 20px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+        }
+        .header-left h1 { margin: 0; font-size: 24px; font-weight: 600; }
+        .header-left p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
+        .logout-icon { color: white; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%; text-decoration: none; transition: 0.3s; }
+
+        /* STATS BAR */
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: -50px auto 20px;
+            padding: 0 20px;
+            gap: 8px;
+            position: relative;
+            z-index: 10;
+        }
+        .stat-card {
+            background: white;
+            flex: 1;
+            padding: 15px 5px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .stat-number { display: block; font-size: 18px; font-weight: 700; color: #333; }
+        .stat-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* JOB CARDS */
+        .partner-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .job-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border: 1px solid #eee;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+            padding-bottom: 15px;
+        }
+
+        .service-title { margin: 0 0 5px; color: #333; font-size: 18px; }
+        .price-tag { color: #1e88e5; font-weight: 600; font-size: 14px; display: block; }
+
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .success { background-color: #e8f5e9; color: #2e7d32; }
+        .pending { background-color: #e3f2fd; color: #1e88e5; }
+        .cancelled { background-color: #ffebee; color: #c62828; }
+
+        .job-detail { display: flex; align-items: center; margin-bottom: 8px; color: #555; font-size: 14px; }
+        .job-detail i { width: 25px; color: #999; text-align: center; margin-right: 10px; }
+
+        /* UPDATED ACTION BUTTONS LAYOUT */
+        .job-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns equal width */
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+            color: #333;
+            width: 100%; /* Fill the grid cell */
+        }
+        .call-btn { background: #f5f5f5; }
+        .map-btn { background: #e3f2fd; color: #1565c0; }
+
+        .btn-disabled {
+            grid-column: span 2; /* Full width for disabled messages */
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            background: #f5f5f5;
+            color: #777;
+            font-size: 14px;
+        }
+        .cancelled-border { border-left: 5px solid #d32f2f; }
+    </style>
+</head>
+<body>
+
+    <header class="partner-header">
+        <div class="header-left">
+            <h1>Hello, {{ session['name'] }} 👋</h1>
+            <p>Here are your assigned tasks</p>
+        </div>
+        <a href="/logout" class="logout-icon"><i class="fa-solid fa-power-off"></i></a>
+    </header>
+
+    <div class="stats-container">
+        {% set total_jobs = jobs|length %}
+        {% set completed_jobs = jobs|selectattr('status', 'equalto', 'Completed')|list|length %}
+        {% set pending_jobs = jobs|selectattr('status', 'equalto', 'Assigned')|list|length %}
+        {% set cancelled_jobs = jobs|selectattr('status', 'equalto', 'Cancelled')|list|length %}
+
+        <div class="stat-card">
+            <span class="stat-number">{{ pending_jobs }}</span>
+            <span class="stat-label">Pending</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number u-icon-green">{{ completed_jobs }}</span>
+            <span class="stat-label">Done</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number u-stat-red">{{ cancelled_jobs }}</span>
+            <span class="stat-label">Cancelled</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ total_jobs }}</span>
+            <span class="stat-label">Total</span>
+        </div>
+    </div>
+
+    <main class="partner-container">
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="job-card {{ 'cancelled-border' if job.status == 'Cancelled' else '' }}">
+
+                <div class="job-header">
+                    <div>
+                        <h3 class="service-title">{{ job.service_name }}</h3>
+                        <span class="price-tag">
+                            {% if job.price %}₹{{ job.price }}{% else %}Standard Rate{% endif %}
+                        </span>
+                    </div>
+
+                    {% if job.status == 'Completed' %}
+                        <span class="status-badge success">Completed</span>
+                    {% elif job.status == 'Cancelled' %}
+                        <span class="status-badge cancelled">Cancelled</span>
+                    {% else %}
+                        <span class="status-badge pending">Active</span>
+                    {% endif %}
+                </div>
+
+                <div class="job-body">
+                    <div class="job-detail">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>{{ job.service_date }} • {{ job.service_time }}</span>
+                    </div>
+
+                    <div class="job-detail">
+                        <i class="fa-solid fa-user"></i>
+                        <span>{{ job.customer_name }}</span>
+                    </div>
+
+                    <div class="job-detail">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>{{ job.address }}</span>
+                    </div>
+                </div>
+
+                <div class="job-actions">
+                    {% if job.status == 'Cancelled' %}
+                        <div class="btn-disabled u-btn-cancel-job">
+                            <i class="fa-solid fa-ban"></i> Cancelled
+                        </div>
+
+                    {% elif job.status == 'Completed' %}
+                        <div class="btn-disabled u-btn-disabled-done">
+                            <i class="fa-solid fa-check-double"></i> Job Completed
+                        </div>
+
+                    {% else %}
+                        <a href="tel:{{ job.customer_phone }}" class="action-btn call-btn">
+                            <i class="fa-solid fa-phone"></i> Call
+                        </a>
+
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ job.address }}" target="_blank" class="action-btn map-btn">
+                            <i class="fa-solid fa-diamond-turn-right"></i> Map
+                        </a>
+
+                        <form action="{{ url_for('employee_cancel', booking_id=job.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this job?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="action-btn u-btn-cancel-job">
+                                <i class="fa-solid fa-ban"></i> Cancel
+                            </button>
+                        </form>
+
+                        <form action="{{ url_for('complete_job', booking_id=job.id) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="action-btn u-btn-complete-job">
+                                <i class="fa-solid fa-check-circle"></i> Done
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-jobs u-no-jobs-empty">
+                <i class="fa-solid fa-clipboard-check u-icon-empty-state"></i>
+                <h3>No jobs assigned yet!</h3>
+                <p>Relax, we will notify you when a new booking arrives.</p>
+            </div>
+        {% endif %}
+    </main>
+
+</body>
+</html>

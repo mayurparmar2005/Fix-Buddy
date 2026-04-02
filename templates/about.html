@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Fix Buddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">Fix Buddy</a>
+            <div class="nav-links">
+                <a href="/services" class="nav-item">Home</a>
+
+                <a href="/about" class="nav-item u-nav-active-green">About Us</a>
+                <a href="/logout" class="nav-item">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="about-header">
+        <h1>About Fix Buddy</h1>
+        <p>Your trusted partner for home services</p>
+    </div>
+
+    <main class="container u-container-max100">
+
+        <section class="about-section">
+            <h2 class="section-title"><i class="fa-solid fa-building"></i> Who We Are</h2>
+            <div class="text-content">
+                <div class="u-about-section-box">
+
+    <div class="u-mb-40-wrap">
+        <h2 class="u-section-title-row">
+            <i class="fa-solid fa-building u-icon-green"></i> Who We Are
+        </h2>
+        <p class="u-fs-16 u-color-gray">
+            <strong>Fix Buddy</strong> is Ahmedabad's most trusted on-demand home service marketplace.
+            We were born from a simple struggle: finding a reliable plumber, cleaner, or beautician shouldn't be harder than ordering a pizza.
+        </p>
+        <p class="u-about-p">
+            We bridge the gap between busy households in areas like Satellite, Vastrapur, and Iskon, and skilled local professionals who take pride in their work.
+            Whether you need a deep home clean, a quick AC repair, or a relaxing salon session at home, Fix Buddy is your one-stop solution.
+        </p>
+    </div>
+
+    <hr class="u-divider-gray">
+
+    <div class="u-mb-40-wrap">
+        <h2 class="u-section-title-row">
+            <i class="fa-solid fa-bullseye u-icon-green"></i> Our Mission
+        </h2>
+        <p class="u-fs-16 u-color-gray">
+            Our mission is twofold:
+        </p>
+        <ul class="u-about-ul">
+            <li>
+                <strong>To Simplify Living:</strong> We deliver safety, quality, and convenience to your doorstep, giving you back your weekends.
+            </li>
+            <li>
+                <strong>To Empower Professionals:</strong> We provide a dignified platform for skilled workers (our "Buddies") to earn a steady income, manage their schedules, and grow their careers without middlemen exploitation.
+            </li>
+        </ul>
+    </div>
+
+    <hr class="u-divider-gray">
+
+    <div>
+        <h2 class="u-about-h2">
+            <i class="fa-solid fa-star u-icon-green"></i> Why Choose Fix Buddy?
+        </h2>
+
+        <div class="u-trust-grid">
+            <div class="u-info-block">
+                <h4 class="u-mb-10 u-color-dark">Verified Professionals</h4>
+                <p class="u-trust-p">Every professional undergoes a strict background check and skill assessment before entering your home.</p>
+            </div>
+
+            <div class="u-info-block">
+                <h4 class="u-mb-10 u-color-dark">Transparent Pricing</h4>
+                <p class="u-trust-p">No hidden costs or last-minute haggling. You pay exactly what you see on the app.</p>
+            </div>
+
+            <div class="u-info-block">
+                <h4 class="u-mb-10 u-color-dark">Satisfaction Guaranteed</h4>
+                <p class="u-trust-p">If you're not happy with the service, our support team will ensure it's made right.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Services We Provide</h2>
+            <div class="about-services-grid">
+                {% for service in services %}
+                <div class="mini-service-item">
+                    <i class="fa-solid fa-check-circle"></i> {{ service.service_name }}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="about-section">
+            <h2 class="section-title"><i class="fa-solid fa-headset"></i> Contact Us</h2>
+
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <strong>Email</strong>
+                            <p>fixbuddy04@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h3>Send us a message</h3>
+                    <form action="#">
+                        <input type="text" placeholder="Your Name" class="auth-input u-input-margin-b10">
+                        <input type="email" placeholder="Your Email" class="auth-input u-input-margin-b10">
+                        <textarea placeholder="How can we help?" class="auth-input u-textarea-h100-mb10"></textarea>
+                        <button type="button" class="auth-primary-btn">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-bottom">
+                <p>© 2025 Fix Buddy Technologies India Pvt. Ltd.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

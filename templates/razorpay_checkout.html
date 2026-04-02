@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Buddy | Secure Checkout — ₹{{ "%.0f"|format(total) }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0f1c 0%, #111827 40%, #0d1f3c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        /* ── Animated background particles ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .checkout-wrapper {
+            width: 100%;
+            max-width: 460px;
+            animation: slideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ── Brand header ── */
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-name span {
+            color: #6ee7b7;
+        }
+
+        /* ── Main card ── */
+        .checkout-card {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* ── Gradient top stripe ── */
+        .card-top-stripe {
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4, #10b981);
+            background-size: 300%;
+            animation: gradientShift 4s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* ── Amount header ── */
+        .amount-header {
+            padding: 28px 28px 24px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #6ee7b7;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .amount-display {
+            font-size: 52px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .amount-display sup {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 0;
+            vertical-align: top;
+            margin-top: 8px;
+            display: inline-block;
+        }
+
+        .amount-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 8px;
+        }
+
+        /* ── Order summary ── */
+        .order-section {
+            padding: 20px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .section-title {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .order-items {
+            max-height: 160px;
+            overflow-y: auto;
+        }
+
+        .order-items::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .order-items::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-name {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-dot {
+            width: 6px;
+            height: 6px;
+            background: #6366f1;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #a5b4fc;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.12);
+        }
+
+        .total-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .total-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: #6ee7b7;
+        }
+
+        /* ── Pay button section ── */
+        .pay-section {
+            padding: 24px 28px 28px;
+        }
+
+        /* Razorpay brand pill */
+        .rpay-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+        }
+
+        .rpay-logo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #528ff5;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .rpay-logo-icon {
+            width: 20px;
+            height: 20px;
+            background: #528ff5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        /* Main pay button */
+        .pay-btn {
+            width: 100%;
+            padding: 17px 24px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 8px 30px rgba(99, 102, 241, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pay-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(99, 102, 241, 0.55);
+        }
+
+        .pay-btn:hover::before {
+            opacity: 1;
+        }
+
+        .pay-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .pay-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pay-btn .btn-shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transform: skewX(-20deg);
+            animation: shimmer 2.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 200%;
+            }
+        }
+
+        /* Payment methods row */
+        .payment-methods {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .pm-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pm-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .pm-chip i {
+            font-size: 9px;
+        }
+
+        /* Cancel link */
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .cancel-link:hover {
+            color: #f87171;
+        }
+
+        /* Security footer */
+        .security-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 0 28px 22px;
+            flex-wrap: wrap;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .security-item i {
+            color: #6ee7b7;
+            font-size: 10px;
+        }
+
+        /* ── Payment Success Overlay ── */
+        .success-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0a0f1c 0%, #0d2010 50%, #0a1a0a 100%);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+
+        .success-overlay.show {
+            display: flex;
+            animation: fadeInOverlay 0.4s ease;
+        }
+
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Ripple rings */
+        .success-rings {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin-bottom: 32px;
+        }
+
+        .success-rings .ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            animation: rippleRing 2s ease-out infinite;
+        }
+
+        .success-rings .ring:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+
+        .success-rings .ring:nth-child(3) {
+            animation-delay: 0.8s;
+        }
+
+        @keyframes rippleRing {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        .success-circle {
+            position: absolute;
+            inset: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(16, 185, 129, 0.5);
+            animation: popIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-circle i {
+            font-size: 42px;
+            color: white;
+            animation: checkDraw 0.4s ease 0.6s both;
+        }
+
+        @keyframes checkDraw {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -0.5px;
+            animation: slideUp2 0.5s ease 0.5s both;
+        }
+
+        .success-amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6ee7b7;
+            margin-top: 6px;
+            animation: slideUp2 0.5s ease 0.65s both;
+        }
+
+        .success-sub {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 8px;
+            animation: slideUp2 0.5s ease 0.75s both;
+        }
+
+        .success-countdown {
+            margin-top: 32px;
+            width: 56px;
+            height: 56px;
+            position: relative;
+            animation: slideUp2 0.5s ease 0.85s both;
+        }
+
+        .success-countdown svg {
+            transform: rotate(-90deg);
+        }
+
+        .countdown-track {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 4;
+        }
+
+        .countdown-fill {
+            fill: none;
+            stroke: #10b981;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-dasharray: 138;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear;
+        }
+
+        .countdown-num {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .success-redirect-msg {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 10px;
+            animation: slideUp2 0.5s ease 0.95s both;
+        }
+
+        @keyframes slideUp2 {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Particle burst */
+        .particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: burst 1s ease-out forwards;
+        }
+
+        @keyframes burst {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--dx), var(--dy)) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="success-overlay" id="successOverlay">
+        <div class="particles" id="particles"></div>
+        <div class="success-rings">
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="ring"></div>
+            <div class="success-circle">
+                <i class="fa-solid fa-check"></i>
+            </div>
+        </div>
+        <div class="success-title">Payment Successful!</div>
+        <div class="success-amount">₹{{ "%.0f"|format(total) }} Paid</div>
+        <div class="success-sub">Your booking is being confirmed…</div>
+        <div class="success-countdown">
+            <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle class="countdown-track" cx="28" cy="28" r="22" />
+                <circle class="countdown-fill" id="countdownCircle" cx="28" cy="28" r="22" />
+            </svg>
+            <div class="countdown-num" id="countdownNum">3</div>
+        </div>
+        <div class="success-redirect-msg">Redirecting in a moment…</div>
+    </div>
+
+    <div class="checkout-wrapper">
+
+        <div class="brand-row">
+            <div class="brand-icon"><i class="fa-solid fa-wrench"></i></div>
+            <div class="brand-name">Fix <span>Buddy</span></div>
+        </div>
+
+        <div class="checkout-card">
+            <div class="card-top-stripe"></div>
+
+            <div class="amount-header">
+                <div class="secure-badge">
+                    <i class="fa-solid fa-lock"></i> Secure Payment
+                </div>
+                <div class="amount-display">
+                    <sup>₹</sup>{{ "%.0f"|format(total) }}
+                </div>
+                <div class="amount-label">Total payable for {{ services|length }} service{{ 's' if services|length > 1
+                    else '' }}</div>
+            </div>
+
+            <div class="order-section">
+                <div class="section-title"><i class="fa-solid fa-receipt"></i> Order Summary</div>
+                <div class="order-items">
+                    {% for s in services %}
+                    <div class="order-item">
+                        <div class="item-name">
+                            <span class="item-dot"></span>
+                            {{ s.service_name }}
+                        </div>
+                        <div class="item-price">₹{{ "%.0f"|format(s.price) }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if services|length > 1 %}
+                <div class="order-total">
+                    <span class="total-label">Grand Total</span>
+                    <span class="total-value">₹{{ "%.0f"|format(total) }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="pay-section">
+                <div class="rpay-brand">
+                    <span>Powered by</span>
+                    <span class="rpay-logo">
+                        <span class="rpay-logo-icon">R</span>
+                        Razorpay
+                    </span>
+                </div>
+
+                <button type="button" class="pay-btn" id="payBtn" onclick="openRazorpay()">
+                    <div class="btn-shimmer"></div>
+                    <i class="fa-solid fa-bolt"></i>
+                    Pay ₹{{ "%.0f"|format(total) }} Securely
+                </button>
+
+                <div class="payment-methods">
+                    <span class="pm-label">Accepts &nbsp;</span>
+                    <span class="pm-chip"><i class="fa-solid fa-credit-card"></i> Cards</span>
+                    <span class="pm-chip"><i class="fa-solid fa-mobile-screen-button"></i> UPI</span>
+                    <span class="pm-chip"><i class="fa-solid fa-wallet"></i> Wallets</span>
+                    <span class="pm-chip"><i class="fa-solid fa-building-columns"></i> Net Banking</span>
+                </div>
+
+                <a href="/services" class="cancel-link">
+                    <i class="fa-solid fa-arrow-left"></i> Cancel &amp; return to services
+                </a>
+            </div>
+
+            <div class="security-footer">
+                <div class="security-item"><i class="fa-solid fa-shield-halved"></i> 256-bit SSL</div>
+                <div class="security-item"><i class="fa-solid fa-lock"></i> PCI DSS Compliant</div>
+                <div class="security-item"><i class="fa-solid fa-check-circle"></i> RBI Regulated</div>
+            </div>
+        </div>
+
+    </div>
+
+    <form id="successForm" action="/razorpay-success" method="POST">
+        <input type="hidden" name="razorpay_payment_id" id="f_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="f_order_id">
+        <input type="hidden" name="razorpay_signature" id="f_signature">
+        <input type="hidden" name="service_ids" value="{{ service_ids }}">
+    </form>
+
+    <form id="failureForm" action="/razorpay-failure" method="POST">
+        <input type="hidden" name="error_description" id="f_error_desc">
+        <input type="hidden" name="service_ids" value="{{ service_ids }}">
+    </form>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            key: "{{ razorpay_key }}",
+            amount: {{ amount_paise }},
+        currency: "INR",
+            name: "Fix Buddy",
+                description: "Home Services Booking",
+                    order_id: "{{ razorpay_order_id }}",
+                        image: "https://i.ibb.co/m8rRXrQ/fix-buddy-logo.png",
+
+                            handler: function (response) {
+                                // Fill form fields immediately
+                                document.getElementById('f_payment_id').value = response.razorpay_payment_id;
+                                document.getElementById('f_order_id').value = response.razorpay_order_id;
+                                document.getElementById('f_signature').value = response.razorpay_signature;
+                                // Show success splash with countdown
+                                showSuccessSplash();
+                            },
+
+        prefill: {
+            name: "{{ user_name }}",
+                email: "{{ user_email }}",
+                    contact: "{{ user_phone }}"
+        },
+
+        theme: {
+            color: "#6366f1"
+        },
+
+        modal: {
+            ondismiss: function () {
+                // User closed the popup without paying — re-enable button
+                var btn = document.getElementById('payBtn');
+                btn.disabled = false;
+                btn.innerHTML = '<div class="btn-shimmer"></div><i class="fa-solid fa-bolt"></i> Pay ₹{{ "%.0f"|format(total) }} Securely';
+            }
+        }
+        };
+
+        var rzp = new Razorpay(options);
+
+        rzp.on('payment.failed', function (response) {
+            document.getElementById('f_error_desc').value = response.error.description || 'Payment failed';
+            document.getElementById('failureForm').submit();
+        });
+
+        function openRazorpay() {
+            var btn = document.getElementById('payBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Opening Razorpay…';
+            rzp.open();
+        }
+
+        function showSuccessSplash() {
+            var overlay = document.getElementById('successOverlay');
+            overlay.classList.add('show');
+
+            // Particle burst
+            var colors = ['#10b981', '#6ee7b7', '#6366f1', '#a5b4fc', '#fbbf24', '#f9a8d4'];
+            var container = document.getElementById('particles');
+            for (var i = 0; i < 30; i++) {
+                var p = document.createElement('div');
+                p.className = 'particle';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = (30 + Math.random() * 40) + 'vw';
+                p.style.top = (30 + Math.random() * 40) + 'vh';
+                var angle = Math.random() * 2 * Math.PI;
+                var dist = 80 + Math.random() * 160;
+                p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+                p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+                p.style.animationDelay = (Math.random() * 0.3) + 's';
+                container.appendChild(p);
+            }
+
+            // Countdown: 3 → 2 → 1 → submit
+            var count = 3;
+            var circumference = 138;
+            var numEl = document.getElementById('countdownNum');
+            var circEl = document.getElementById('countdownCircle');
+            circEl.style.strokeDashoffset = 0;
+
+            var interval = setInterval(function () {
+                count--;
+                numEl.textContent = count;
+                circEl.style.strokeDashoffset = circumference * ((3 - count) / 3);
+                if (count <= 0) {
+                    clearInterval(interval);
+                    document.getElementById('successForm').submit();
+                }
+            }, 1000);
+        }
+
+        // Auto-open the Razorpay modal when the page loads for better UX
+        window.addEventListener('load', function () {
+            setTimeout(openRazorpay, 600);
+        });
+    </script>
+
+</body>
+
+</html>

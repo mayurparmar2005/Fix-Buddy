@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Fix Buddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="u-bg-page">
+
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Fix Buddy</h2>
+                <span class="badge">Admin</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}" class="active">
+                        <i class="fa-solid fa-gauge"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_professionals') }}">
+                        <i class="fa-solid fa-users"></i> Professionals
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_complaints') }}">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Complaints
+                    </a>
+                </li>
+                <li class="u-mt-50"><a href="/logout" class="logout-btn"><i
+                            class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Overview</h1>
+                <div class="u-flex-center-gap12">
+                    <a href="/admin-export-csv"
+                        class="u-link-btn-green u-fs-13">
+                        <i class="fa-solid fa-file-csv"></i> Export CSV
+                    </a>
+                    <div class="admin-profile">
+                        <span>Administrator</span>
+                        <div class="profile-pic"><i class="fa-solid fa-user"></i></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="stat-info">
+                        <h3>Total Revenue</h3>
+                        <p>₹{{ total_revenue }}</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fa-solid fa-user-clock"></i></div>
+                    <div class="stat-info">
+                        <h3>Staff Status</h3>
+                        <p>
+                            <span class="u-staff-busy">{{ busy_count }} Busy</span> |
+                            <span class="u-staff-free">{{ free_staff }} Free</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon u-stat-icon-calendar"><i class="fa-solid fa-calendar-check u-fs-24-icon"></i></div>
+                    <div class="stat-info">
+                        <h3>Total Bookings</h3>
+                        <p>{{ bookings|length }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-section">
+                <div class="section-header">
+                    <h2>Recent Bookings</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Service</th>
+                                <th>Customer</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Assign Staff</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>#{{ booking.id }}</td>
+                                <td>
+                                    <strong>{{ booking.service_name }}</strong><br>
+                                    <span class="u-text-muted-sm">{{ booking.address }}</span>
+                                </td>
+                                <td>{{ booking.customer_name }}</td>
+                                <td>{{ booking.service_date }}<br><span class="u-text-muted-xs">{{
+                                        booking.service_time }}</span></td>
+
+                                <td>
+                                    {% if booking.status == 'Completed' %}
+                                    <span class="badge u-pill u-pill-green">Completed</span>
+                                    {% elif booking.status == 'Assigned' %}
+                                    <span class="badge u-pill u-pill-blue">Assigned</span>
+                                    {% elif booking.status == 'Cancelled' %}
+                                    <span class="badge u-pill u-pill-red">Cancelled</span>
+                                    {% else %}
+                                    <span class="badge u-pill u-pill-orange">Pending</span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if booking.status == 'Cancelled' %}
+                                    <span class="u-danger-bold">
+                                        <i class="fa-solid fa-ban"></i> Cancelled
+                                    </span>
+                                    {% elif booking.status == 'Completed' %}
+                                    <span class="u-success-bold">
+                                        <i class="fa-solid fa-check"></i> Done
+                                    </span>
+                                    {% elif booking.status == 'Assigned' %}
+                                    <form action="/assign-job" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                        <select name="professional_id" required
+                                            class="u-select-sm">
+                                            <option value="" disabled selected>Change Worker</option>
+                                            {% for professional in professionals %}
+                                            <option value="{{ professional.id }}">{{ professional.name }} ({{
+                                                professional.service_type }})</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit"
+                                            class="u-btn-admin-update">Update</button>
+                                    </form>
+                                    {% else %}
+                                    <form action="/assign-job" method="POST">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                                        <select name="professional_id" required
+                                            class="u-select-sm">
+                                            <option value="" disabled selected>Assign Staff</option>
+                                            {% for professional in professionals %}
+                                            <option value="{{ professional.id }}">{{ professional.name }} ({{
+                                                professional.service_type }})</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit"
+                                            class="u-btn-admin-assign">Assign</button>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

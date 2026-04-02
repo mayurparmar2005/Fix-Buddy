@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Service Schedule | Fix Buddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body class="login-page-bg">
+
+    <div class="login-wrapper">
+        <div class="login-box u-booking-box">
+
+            <div class="u-success-banner">
+                <div class="u-banner-icon-wrap">
+                    <i class="fa-solid fa-check u-icon-white"></i>
+                </div>
+                <div>
+                    <div class="u-banner-title">Payment Successful! 🎉</div>
+                    <div class="u-banner-sub">Now schedule your service
+                        below</div>
+                </div>
+            </div>
+
+            <h2 class="brand-name u-brand-name-sm">
+                <i class="fa-solid fa-clock"></i> Schedule Service
+            </h2>
+            <p class="subtitle u-subtitle-mb20">Enter your address and preferred timing
+            </p>
+
+            <form action="{{ url_for('booking_details', transaction_ids=booking_ids) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="u-form-section-label">
+                    <label class="u-section-label-text">Delivery
+                        Address</label>
+                    <div class="u-input-stack">
+                        <input type="text" name="house_no" placeholder="House / Flat No." required class="auth-input u-input-padded">
+                        <input type="text" name="society" placeholder="Society / Building Name" required
+                            class="auth-input u-input-padded">
+                        <input type="text" name="street" placeholder="Street / Landmark" required class="auth-input u-input-padded">
+                        <input type="text" name="area" placeholder="Area / City" required class="auth-input u-input-padded">
+                    </div>
+                </div>
+
+                <div class="u-form-section-sep">
+                    <label class="u-section-label-text">Service
+                        Date</label>
+                    <div class="u-radio-row">
+                        <label class="u-label-pointer">
+                            <input type="radio" name="date_type" value="today" checked onclick="toggleDateInput(false)">
+                            Today
+                        </label>
+                        <label class="u-label-pointer">
+                            <input type="radio" name="date_type" value="custom" onclick="toggleDateInput(true)"> Select
+                            Date
+                        </label>
+                    </div>
+                    <input type="date" name="service_date" id="custom-date" class="auth-input u-none u-input-padded">
+                </div>
+
+                <div class="u-form-section-mb25">
+                    <label class="u-section-label-text">Time
+                        Slot</label>
+                    <select name="service_time" class="auth-input u-selector-input" required>
+                        <option value="" disabled selected>Select a time slot</option>
+                        <option value="09:00 AM - 11:00 AM">09:00 AM - 11:00 AM</option>
+                        <option value="12:00 PM - 02:00 PM">12:00 PM - 02:00 PM</option>
+                        <option value="03:00 PM - 05:00 PM">03:00 PM - 05:00 PM</option>
+                        <option value="06:00 PM - 08:00 PM">06:00 PM - 08:00 PM</option>
+                    </select>
+                </div>
+                <div class="u-form-section-sep">
+                    <label class="u-section-label-text">Contact
+                        Email</label>
+                    <input type="email" name="customer_email" placeholder="Enter email for receipt" required
+                        class="auth-input u-input-padded u-w-full u-mt-8">
+                </div>
+
+                <button type="submit" class="auth-primary-btn" id="confirm-btn" onclick="showLoader(this)">
+                    <span id="btn-text"><i class="fa-solid fa-check"></i> Confirm Booking</span>
+                    <span id="btn-spinner" class="u-none"><i class="fa-solid fa-circle-notch fa-spin"></i>
+                        Booking...</span>
+                </button>
+            </form>
+
+            <a href="/services" class="u-back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to Services
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Show or hide the date picker based on choice
+        function toggleDateInput(show) {
+            const dateInput = document.getElementById('custom-date');
+            dateInput.style.display = show ? 'block' : 'none';
+            if (show) {
+                dateInput.required = true;
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.setAttribute('min', today);
+            } else {
+                dateInput.required = false;
+            }
+        }
+
+        function showLoader(btn) {
+            const text = document.getElementById('btn-text');
+            const spin = document.getElementById('btn-spinner');
+            // Show spinner immediately (visual feedback)
+            text.style.display = 'none';
+            spin.style.display = 'inline';
+            // Disable AFTER the form submit fires (prevents double-click without aborting submit)
+            setTimeout(() => {
+                btn.disabled = true;
+                btn.style.opacity = '0.8';
+            }, 0);
+        }
+    </script>
+
+</body>
+
+</html>

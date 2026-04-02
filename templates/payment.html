@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fix Buddy | Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head><body class="login-page-bg">
+<div class="login-wrapper">
+    <div class="login-box u-pay-box-override">
+    <h2 class="brand-name u-brand-name-mb5"><i class="fa-solid fa-cart-shopping"></i> Order Summary</h2>
+    <p class="subtitle u-subtitle-mb10">Review and pay to confirm booking</p>
+
+    <div class="order-summary-list u-section-card">
+        <div class="u-flex-between-mb10">
+            <h4 class="u-fs-14 u-color-dark"><i class="fa-solid fa-list-check"></i> Items</h4>
+            <button type="button" onclick="clearEntireCart()" class="u-btn-clear-cart">Clear All</button>
+        </div>
+
+        <div class="u-cart-scroll">
+            {% for s in services %}
+            <div id="item-{{ s.id }}" class="u-cart-item-row">
+                <div class="u-fs-14-txt">
+                    <span class="u-fw-500">{{ s.service_name }}</span>
+                    <span class="u-fw-700-dark">₹{{ s.price }}</span>
+                </div>
+                <button type="button" onclick="removeFromPayment('{{ s.id }}')" class="u-btn-remove-item">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="u-pay-total-row">
+            <span>Total</span>
+            <span id="display-total">₹{{ total }}</span>
+        </div>
+    </div>
+
+    <div class="payment-section u-payment-section-full">
+        <p class="u-scan-label">Scan to Pay</p>
+        <img src="{{ url_for('static', filename='images/upi_qr.jpg') }}" alt="Payment QR" class="u-qr-img">
+    </div>
+
+    <div class="u-full-width">
+        <form method="POST" onsubmit="clearCartLocal()">
+            <button type="submit" class="auth-primary-btn u-pay-btn">I have Paid</button>
+        </form>
+        <a href="/services" class="u-cancel-link">Cancel & Edit Cart</a>
+    </div>
+</div>
+</div>
+
+<script>
+    // This clears the browser cart after they click "I have Paid"
+    function clearCartLocal() {
+        localStorage.removeItem('fixBuddyCart');
+    }
+
+function removeFromPayment(serviceId) {
+    // 1. Get the current cart from LocalStorage
+    let cart = JSON.parse(localStorage.getItem('fixBuddyCart')) || [];
+
+    // 2. Filter out the service to be removed
+    // Note: We use string comparison just in case IDs are stored as strings
+    cart = cart.filter(item => item.id.toString() !== serviceId.toString());
+
+    // 3. Save the updated cart back to LocalStorage
+    localStorage.setItem('fixBuddyCart', JSON.stringify(cart));
+
+    // 4. Redirect based on remaining items
+    if (cart.length > 0) {
+        // Build new URL with remaining IDs
+        const newIds = cart.map(item => item.id).join(',');
+        window.location.href = "/payment/" + newIds;
+    } else {
+        // If cart is empty, go back to services
+        alert("Cart is now empty. Returning to services.");
+        window.location.href = "/services";
+    }
+}
+
+function clearEntireCart() {
+    if (confirm("Are you sure you want to remove all items from your cart?")) {
+        // 1. Remove the entire object from LocalStorage
+        localStorage.removeItem('fixBuddyCart');
+
+        // 2. Redirect to services page
+        window.location.href = "/services";
+    }
+}
+
+
+</script>
+
+</body>
+</html>

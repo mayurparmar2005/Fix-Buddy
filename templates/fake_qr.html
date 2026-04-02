@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Buddy | Pay ₹{{ total }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-wrapper {
+            width: 100%;
+            max-width: 420px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Top brand bar ── */
+        .brand-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .brand-bar span {
+            color: #4ade80;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* ── Main card ── */
+        .pay-card {
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        }
+
+        /* ── Card header ── */
+        .pay-header {
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            padding: 24px 24px 20px;
+            text-align: center;
+            color: white;
+        }
+        .pay-header .merchant {
+            font-size: 13px;
+            opacity: 0.85;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .pay-header .amount {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .pay-header .upi-handle {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* ── Order summary strip ── */
+        .order-strip {
+            background: #f8faff;
+            border-bottom: 1px solid #e8edf5;
+            padding: 12px 20px;
+        }
+        .order-strip .strip-title {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .order-item span:last-child { font-weight: 600; color: #1a73e8; }
+
+        /* ── QR section ── */
+        .qr-section {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .qr-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .qr-label::before,
+        .qr-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        .qr-frame {
+            display: inline-block;
+            padding: 12px;
+            border: 2px solid #e8edf5;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(26,115,232,0.1);
+            position: relative;
+            transition: box-shadow 0.3s;
+        }
+        .qr-frame:hover { box-shadow: 0 8px 30px rgba(26,115,232,0.2); }
+        .qr-frame img { display: block; width: 200px; height: 200px; border-radius: 8px; }
+
+        /* Corner decorations on QR */
+        .qr-corner { position: absolute; width: 18px; height: 18px; border-color: #1a73e8; border-style: solid; }
+        .qr-corner.tl { top: 6px; left: 6px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+        .qr-corner.tr { top: 6px; right: 6px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+        .qr-corner.bl { bottom: 6px; left: 6px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+        .qr-corner.br { bottom: 6px; right: 6px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+
+        .scan-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 14px;
+            line-height: 1.5;
+        }
+        .scan-hint strong { color: #1a73e8; }
+
+        /* ── UPI app icons ── */
+        .upi-apps {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 14px;
+        }
+        .upi-app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #888;
+        }
+        .upi-app-icon .icon-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .gpay  { background: #fff; border: 1px solid #e0e0e0; }
+        .phone { background: #5f259f; color: white; }
+        .paytm { background: #00b9f1; color: white; }
+
+        /* ── Direct pay button (mobile) ── */
+        .direct-pay-btn {
+            display: block;
+            margin: 0 24px;
+            padding: 14px;
+            background: linear-gradient(135deg, #34a853, #16a34a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(52,168,83,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .direct-pay-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(52,168,83,0.5); }
+        .direct-pay-btn i { margin-right: 8px; }
+
+        /* ── Divider ── */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 24px 0;
+            color: #aaa;
+            font-size: 12px;
+        }
+        .or-divider::before, .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        /* ── Confirmation section ── */
+        .confirm-section {
+            padding: 14px 24px 24px;
+        }
+        .confirm-label {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        /* ── I Have Paid button ── */
+        .paid-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a73e8, #1557b0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(26,115,232,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .paid-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,115,232,0.5); }
+        .paid-btn:active { transform: translateY(0); }
+
+        /* ── Spinner ── */
+        .verifying-overlay {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner-ring {
+            width: 50px; height: 50px;
+            border: 4px solid #e3f2fd;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .verifying-text { color: #1a73e8; font-size: 15px; font-weight: 600; }
+        .verifying-sub { color: #888; font-size: 12px; margin-top: 4px; }
+
+        /* ── Cancel link ── */
+        .cancel-link {
+            display: block;
+            text-align: center;
+            color: #e53935;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 14px;
+        }
+        .cancel-link:hover { text-decoration: underline; }
+
+        /* ── Security badge ── */
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 16px;
+        }
+        .security-badge i { color: #4ade80; }
+
+        /* ── Timer ── */
+        .timer-bar {
+            height: 3px;
+            background: #e8edf5;
+            border-radius: 0;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1a73e8, #34a853);
+            width: 100%;
+            animation: countdown 600s linear forwards;
+        }
+        @keyframes countdown { from { width: 100%; } to { width: 0%; } }
+    </style>
+</head>
+<body>
+
+<div class="payment-wrapper">
+
+    <!-- Brand -->
+    <div class="brand-bar">
+        <span>Fix Buddy</span>
+    </div>
+
+    <!-- Main Payment Card -->
+    <div class="pay-card">
+
+        <!-- Timer bar at top -->
+        <div class="timer-bar"><div class="timer-fill"></div></div>
+
+        <!-- Amount Header -->
+        <div class="pay-header">
+            <div class="merchant">{{ payee_name }}</div>
+            <div class="amount">₹{{ "%.0f"|format(total) }}</div>
+            <div class="upi-handle"><i class="fa-solid fa-circle-check u-qr-check-icon"></i> {{ upi_id }}</div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-strip">
+            <div class="strip-title"><i class="fa-solid fa-list-check"></i> &nbsp;Order Summary</div>
+            {% for s in services %}
+            <div class="order-item">
+                <span>{{ s.service_name }}</span>
+                <span>₹{{ "%.0f"|format(s.price) }}</span>
+            </div>
+            {% endfor %}
+            {% if services|length > 1 %}
+            <div class="order-item u-order-total-row">
+                <span class="u-total-label">Total</span>
+                <span class="u-total-value">₹{{ "%.0f"|format(total) }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- QR Code area -->
+        <div class="qr-section">
+            <div class="qr-label">Scan & Pay with any UPI App</div>
+
+            <div class="qr-frame">
+                <div class="qr-corner tl"></div>
+                <div class="qr-corner tr"></div>
+                <div class="qr-corner bl"></div>
+                <div class="qr-corner br"></div>
+                <img src="data:image/png;base64,{{ qr_base64 }}" alt="UPI QR Code — ₹{{ total }}">
+            </div>
+
+            <p class="scan-hint">
+                Open <strong>GPay / PhonePe / Paytm</strong> → Scan QR<br>
+                Amount <strong>₹{{ "%.0f"|format(total) }}</strong> will be pre-filled automatically
+            </p>
+
+            <!-- UPI app indicators -->
+            <div class="upi-apps">
+                <div class="upi-app-icon">
+                    <div class="icon-circle gpay">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Official_Google_Pay_Logo_2020.svg/64px-Official_Google_Pay_Logo_2020.svg.png" width="26" alt="GPay">
+                    </div>
+                    <span>GPay</span>
+                </div>
+                <div class="upi-app-icon">
+                    <div class="icon-circle phone"><i class="fa-solid fa-p u-pay-icon-fw900"></i></div>
+                    <span>PhonePe</span>
+                </div>
+                <div class="upi-app-icon">
+                    <div class="icon-circle paytm"><i class="fa-solid fa-wallet"></i></div>
+                    <span>Paytm</span>
+                </div>
+                <div class="upi-app-icon">
+                    <div class="icon-circle u-icon-circle-white">
+                        <i class="fa-solid fa-mobile-screen u-mobile-icon"></i>
+                    </div>
+                    <span>Any UPI</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile: Open GPay directly -->
+        <div class="u-px-24-pt-16">
+            <a href="{{ gpay_link }}" class="direct-pay-btn" id="gpay-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Official_Google_Pay_Logo_2020.svg/64px-Official_Google_Pay_Logo_2020.svg.png" width="22" alt="GPay">
+                &nbsp;Open GPay — Pay ₹{{ "%.0f"|format(total) }}
+            </a>
+        </div>
+
+        <div class="or-divider">Already paid? Confirm below</div>
+
+        <!-- Confirmation -->
+        <div class="confirm-section">
+            <p class="confirm-label">After completing payment on your UPI app, click below to confirm your booking.</p>
+
+            <!-- Verifying overlay (shown after click) -->
+            <div class="verifying-overlay" id="verifying">
+                <div class="spinner-ring"></div>
+                <div class="verifying-text">Verifying Payment…</div>
+                <div class="verifying-sub">Please do not close this window</div>
+            </div>
+
+            <!-- Confirm form -->
+            <form action="/execute-fake-payment/{{ service_ids }}" method="POST" id="payForm">
+                <button type="button" class="paid-btn" id="paidBtn" onclick="confirmPayment()">
+                    <i class="fa-solid fa-check-circle"></i> I Have Paid Successfully
+                </button>
+            </form>
+
+            <a href="/services" class="cancel-link">
+                <i class="fa-solid fa-arrow-left"></i> Cancel & Edit Cart
+            </a>
+
+            <!-- Security note -->
+            <div class="security-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                256-bit encrypted · Powered by NPCI UPI
+            </div>
+        </div>
+
+    </div><!-- /pay-card -->
+</div><!-- /wrapper -->
+
+<script>
+function confirmPayment() {
+    const btn     = document.getElementById('paidBtn');
+    const form    = document.getElementById('payForm');
+    const overlay = document.getElementById('verifying');
+
+    // Animate button out
+    btn.style.opacity    = '0.5';
+    btn.style.pointerEvents = 'none';
+    btn.innerHTML        = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verifying…';
+
+    // Show overlay under the button area
+    overlay.style.display = 'block';
+
+    // Submit after 2.5 s (mimics verification delay)
+    setTimeout(function () {
+        form.submit();
+    }, 2500);
+}
+
+// On desktop: hide the "Open GPay" button since it only works on Android
+(function() {
+    const ua = navigator.userAgent || '';
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(ua);
+    if (!isMobile) {
+        document.getElementById('gpay-btn').style.display = 'none';
+    }
+})();
+</script>
+
+</body>
+</html>

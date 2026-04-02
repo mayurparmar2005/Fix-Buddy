@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "attribute-allowed-values": "off"
+  }
+}

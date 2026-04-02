@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login | Fix Buddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+        .auth-flash-msg {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .auth-flash-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .auth-flash-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #e53935;
+        }
+    </style>
+</head>
+
+<body class="login-page-bg">
+
+    <nav class="u-nav-fixed-dark">
+        <div class="u-nav-inner">
+            <a href="/"
+                class="u-nav-link-active">Customer</a>
+            <a href="/admin-login"
+                class="u-nav-link-muted">Admin
+                Login</a>
+            <a href="/employee-login"
+                class="u-nav-link-muted">Employee</a>
+        </div>
+    </nav>
+
+    <div class="login-wrapper">
+        <div class="login-box">
+            <a href="/" class="logo u-logo-row">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="u-logo-img-lg">
+
+                <span class="u-logo-text-lg">Fix Buddy</span>
+            </a>
+            <p class="subtitle">Welcome back! Please login to your account.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="auth-flash-msg {{ 'auth-flash-success' if category == 'success' else 'auth-flash-error' }}">
+                <i class="fa-solid fa-{{ 'circle-check' if category == 'success' else 'circle-exclamation' }}"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('login') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="auth-input-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+                </div>
+                <p class="u-forgot-row">
+                    <a href="/forgot-password" class="u-index-forgot">Forgot Password?</a>
+                </p>
+                <button type="submit" class="auth-primary-btn">Login</button>
+            </form>
+
+            <p class="switch-auth-text">
+                Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a>
+            </p>
+        </div>
+    </div>
+    <script>
+        // Flash auto-dismiss
+        setTimeout(() => {
+            document.querySelectorAll('.auth-flash-msg').forEach(el => {
+                el.style.transition = 'opacity 0.5s';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 500);
+            });
+        }, 4000);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Buddy | Home Services</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+        @media (max-width: 768px) {
+            #hamburger-btn {
+                display: block !important;
+            }
+
+            #desktop-nav {
+                display: none !important;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cart-bar" class="cart-bar">
+        <div class="cart-info u-cart-info-flex">
+            <span>
+                <span id="cart-count">0</span> Items &nbsp;|&nbsp; <span id="cart-total">₹0</span>
+            </span>
+            <button type="button" onclick="toggleCartItems()"
+                class="u-cart-toggle-btn"
+                id="cart-toggle-btn">▾ Show</button>
+        </div>
+        <button type="button" id="checkout-link" class="btn btn-primary" onclick="updateCheckoutLink(event)">View Cart &amp;
+            Pay</button>
+    </div>
+    <!-- Cart items mini-list -->
+    <div id="cart-items-list"
+        class="u-cart-dropdown">
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo u-logo-row">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo"
+                    class="u-logo-img-lg">
+                <span class="u-logo-text-lg">Fix Buddy</span>
+            </a>
+
+            <!-- Hamburger button — shown only on mobile -->
+            <button type="button" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu"
+                class="u-hamburger-btn">
+                <i class="fa-solid fa-bars" id="hamburger-icon"></i>
+            </button>
+
+            <div class="nav-links" id="desktop-nav">
+                <a href="/services" class="nav-item">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a href="{{ url_for('profile') }}" class="nav-item">
+                    <i class="fa-solid fa-user"></i> My Account
+                </a>
+                <a href="{{ url_for('about') }}" class="nav-item">
+                    <i class="fa-solid fa-circle-info"></i> About Us
+                </a>
+                <a href="/logout" class="nav-item u-color-danger">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile slide-in drawer -->
+    <div id="mobile-menu" class="u-mobile-menu-overlay">
+        <button type="button" onclick="toggleMobileMenu()"
+            class="u-mobile-close-btn">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <a href="/services" onclick="toggleMobileMenu()"
+            class="u-mobile-nav-link"><i class="fa-solid fa-house u-mobile-nav-icon"></i> Home</a>
+        <a href="{{ url_for('profile') }}" onclick="toggleMobileMenu()"
+            class="u-mobile-nav-link"><i class="fa-solid fa-user u-mobile-nav-icon"></i> My Account</a>
+        <a href="{{ url_for('about') }}" onclick="toggleMobileMenu()"
+            class="u-mobile-nav-link"><i
+                class="fa-solid fa-circle-info u-mobile-nav-icon"></i> About Us</a>
+        <a href="/logout" onclick="toggleMobileMenu()"
+            class="u-mobile-nav-logout"><i
+                class="fa-solid fa-right-from-bracket u-nav-icon-mr12"></i> Logout</a>
+    </div>
+
+
+    <header class="hero">
+        <section class="hero-container">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <h1>Expert services at your doorstep</h1>
+                    <div class="search-container">
+                        <input type="text" id="serviceSearch" onkeyup="filterServices()"
+                            placeholder="Search for AC repair, cleaning...">
+                        <button type="button" class="search-btn" onclick="filterServices()">Search</button>
+                    </div>
+                </div>
+
+                <div class="hero-right">
+                    <div class="photo-grid">
+                        <img src="{{ url_for('static', filename='images/s1.jpg') }}" alt="Service 1">
+                        <img src="{{ url_for('static', filename='images/s2.jpg') }}" alt="Service 2">
+                        <img src="{{ url_for('static', filename='images/s3.jpg') }}" alt="Service 3">
+                        <img src="{{ url_for('static', filename='images/s4.jpg') }}" alt="Service 4">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </header>
+
+    <main class="container">
+
+        <h2 class="section-title"><i class="fa-solid fa-broom"></i> Cleaning Essentials</h2>
+        <div class="services-grid">
+            {% for service in services if service.category == 'Cleaning' %}
+            <div class="service-card">
+                <div class="card-image">
+                    <img src="{{ url_for('static', filename='images/service_' ~ service.id ~ '.jpg') }}"
+                        alt="{{ service.service_name }}" loading="lazy" decoding="async"
+                        onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default_service.jpg') }}'">
+                </div>
+
+                <div class="card-body">
+                    <h3>{{ service.service_name }}</h3>
+                    <p class="price">₹{{ service.price }}</p>
+                    <button type="button" class="add-btn"
+                        onclick="addToCart('{{ service.id }}', '{{ service.service_name }}', {{ service.price }})">
+                        <i class="fa-solid fa-plus"></i> Add
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title"><i class="fa-solid fa-venus"></i> Women's Salon & Spa</h2>
+        </div>
+
+        <div class="scroll-container">
+            <div class="services-grid horizontal" id="women-grid">
+                {% for service in services if service.category == 'Women Salon' %}
+                <div class="service-card horizontal-card women-special">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/service_' ~ service.id ~ '.jpg') }}"
+                            alt="{{ service.service_name }}"
+                            onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default_service.jpg') }}'">
+                    </div>
+
+                    <div class="card-body">
+                        <span class="gender-tag female"><i class="fa-solid fa-person-dress"></i> For Women</span>
+                        <h3>{{ service.service_name }}</h3>
+                        <p class="price">₹{{ service.price }}</p>
+                        <p class="description"><i class="fa-solid fa-shield-heart"></i> Safe & Hygienic</p>
+                        <button type="button" class="add-btn"
+                            onclick="addToCart('{{ service.id }}', '{{ service.service_name }}', {{ service.price }})">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <h2 class="section-title"><i class="fa-solid fa-fire"></i> New & Noteworthy</h2>
+
+        <div class="scroll-container">
+            <div class="services-grid horizontal">
+                {% for service in services if service.category == 'New' %}
+                <div class="service-card horizontal-card new-badge">
+                    <div class="card-image">
+                        <img src="{{ url_for('static', filename='images/service_' ~ service.id ~ '.jpg') }}"
+                            alt="{{ service.service_name }}"
+                            onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/default_service.jpg') }}'">
+                    </div>
+
+                    <div class="card-body">
+                        <h3>{{ service.service_name }}</h3>
+                        <p class="price">₹{{ service.price }}</p>
+                        <button type="button" class="add-btn"
+                            onclick="addToCart('{{ service.id }}', '{{ service.service_name }}', {{ service.price }})">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo-section">
+                <a href="/" class="logo u-footer-logo">Fix Buddy</a>
+            </div>
+
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="\about">About us</a></li>
+                        <li><a href="\about">Terms & conditions</a></li>
+                        <li><a href="\about">Privacy policy</a></li>
+                        <li><a href="\about">Anti-discrimination policy</a></li>
+                        <li><a href="\about">Impact</a></li>
+                        <li><a href="\about">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>For customers</h4>
+                    <ul>
+                        <li><a href="\about">Fix Buddy reviews</a></li>
+                        <li><a href="\about">Categories near you</a></li>
+                        <li><a href="\about">Contact us</a></li>
+                        <li><a href="\about">Help Center</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>For professionals</h4>
+                    <ul>
+                        <li><a href="/employee-login">Register as a professional</a></li>
+                        <li><a href="/employee-login">Partner Support</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col social-col">
+                    <h4>Social links</h4>
+                    <div class="social-icons">
+                        <a href="https://www.instagram.com/fixbuddy04"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 Fix Buddy Technologies India Pvt. Ltd.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ── Search ──
+        function filterServices() {
+            let input = document.getElementById('serviceSearch').value.toLowerCase();
+            let cards = document.getElementsByClassName('service-card');
+            for (let i = 0; i < cards.length; i++) {
+                let serviceName = cards[i].querySelector('h3').innerText.toLowerCase();
+                cards[i].style.display = serviceName.includes(input) ? '' : 'none';
+            }
+        }
+
+        // ── Cart state ──
+        let cart = JSON.parse(localStorage.getItem('fixBuddyCart')) || [];
+
+        function addToCart(id, name, price) {
+            // Convert id to string for consistency
+            id = String(id);
+            const exists = cart.find(item => item.id === id);
+            if (!exists) {
+                cart.push({ id, name, price });
+                saveAndRefreshCart();
+                // Brief visual feedback on the add button
+                const btns = document.querySelectorAll('.add-btn');
+                btns.forEach(btn => {
+                    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${id}'`)) {
+                        btn.innerHTML = '<i class="fa-solid fa-check"></i> Added';
+                        btn.style.background = '#16a34a';
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add';
+                            btn.style.background = '';
+                        }, 1500);
+                    }
+                });
+            } else {
+                // Shake effect instead of alert
+                const bar = document.getElementById('cart-bar');
+                bar.style.animation = 'none';
+                bar.offsetHeight; // reflow
+                bar.style.animation = 'shake 0.4s ease';
+            }
+        }
+
+        function removeFromCart(id) {
+            id = String(id);
+            cart = cart.filter(item => item.id !== id);
+            saveAndRefreshCart();
+            renderCartItems(); // refresh the dropdown
+        }
+
+        function saveAndRefreshCart() {
+            localStorage.setItem('fixBuddyCart', JSON.stringify(cart));
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartBar = document.getElementById('cart-bar');
+            const cartList = document.getElementById('cart-items-list');
+            const countSpan = document.getElementById('cart-count');
+            const totalSpan = document.getElementById('cart-total');
+
+            if (cart.length > 0) {
+                cartBar.classList.add('active');
+                countSpan.innerText = cart.length;
+                const total = cart.reduce((sum, item) => sum + item.price, 0);
+                totalSpan.innerText = '₹' + total;
+            } else {
+                cartBar.classList.remove('active');
+                // Hide items list if cart emptied
+                if (cartList) cartList.style.display = 'none';
+            }
+        }
+
+        function renderCartItems() {
+            const list = document.getElementById('cart-items-list');
+            if (!list) return;
+            list.innerHTML = cart.map(item => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.07);color:white;font-size:13px;">
+                    <span>${item.name}</span>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <span style="color:#4ade80;font-weight:600;">₹${item.price}</span>
+                        <button type="button" onclick="removeFromCart('${item.id}')" style="background:#e53935;border:none;color:white;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:12px;">✕ Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCartItems() {
+            const list = document.getElementById('cart-items-list');
+            const btn = document.getElementById('cart-toggle-btn');
+            if (!list) return;
+            if (list.style.display === 'none' || list.style.display === '') {
+                renderCartItems();
+                list.style.display = 'block';
+                btn.textContent = '▴ Hide';
+            } else {
+                list.style.display = 'none';
+                btn.textContent = '▾ Show';
+            }
+        }
+
+        function updateCheckoutLink(e) {
+            if (e) e.preventDefault();
+            const currentCart = JSON.parse(localStorage.getItem('fixBuddyCart')) || [];
+            if (currentCart.length > 0) {
+                const ids = currentCart.map(item => item.id).join(',');
+                window.location.href = '/initiate-payment/' + ids;
+            } else {
+                alert('Your cart is empty! Please add services first.');
+            }
+        }
+
+        // ── On load ──
+        updateCartUI();
+
+        // ── Mobile menu ──
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const isOpen = menu.style.display === 'flex';
+            menu.style.display = isOpen ? 'none' : 'flex';
+            document.body.style.overflow = isOpen ? '' : 'hidden';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .email-container { font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden; }
+        .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; color: #333; }
+        .item-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .total-box { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .footer { font-size: 12px; color: #888; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Fix Buddy</h1>
+            <p>Booking Confirmation</p>
+        </div>
+        <div class="content">
+            <h3>Hello!</h3>
+            <p>Your payment was successful. Here are your booking details:</p>
+
+            <div class="u-receipt-total-wrap">
+                <strong>Schedule:</strong> {{ date }} at {{ time }}<br>
+                <strong>Address:</strong> {{ address }}
+            </div>
+
+            <h4>Order Summary</h4>
+            {% for s in services %}
+            <div class="u-receipt-row u-clearfix">
+                <span class="u-float-left">{{ s.service_name }}</span>
+                <span class="u-float-right-bold">₹{{ s.price }}</span>
+                <div class="u-clearfix"></div>
+            </div>
+            {% endfor %}
+
+            <div class="total-box">
+                <span class="u-total-amount">Total Paid: ₹{{ total }}</span>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Thank you for choosing Fix Buddy!<br>If you have any questions, reply to this email.</p>
+        </div>
+    </div>
+</body>
+</html>

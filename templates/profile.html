@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Fix Buddy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        /* User Info Section */
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* Pushes details to left, actions to right */
+            flex-wrap: wrap;
+            /* Allows wrapping on mobile */
+            gap: 20px;
+            margin-bottom: 40px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .user-main {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Modern Button Styling for Header */
+        .header-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* Space between the two buttons */
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin-right: 20px;
+        }
+
+        .details h3 {
+            margin: 0;
+            color: #333;
+        }
+
+        .details p {
+            margin: 5px 0 0;
+            color: #777;
+        }
+
+        /* Booking Cards */
+        .booking-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            background: #fff;
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .service-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .price {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .booking-body p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .booking-body i {
+            width: 25px;
+            color: #888;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-assigned {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-paid {
+            background: #ede7f6;
+            color: #4527a0;
+        }
+
+        .status-cancelled {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        /* Action Buttons */
+        .actions {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #f0fdf4;
+            color: #16a34a;
+            border-color: #bbf7d0;
+        }
+
+        .btn-edit:hover {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-back {
+            background-color: #f8fafc;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+
+        .btn-back:hover {
+            background-color: #64748b;
+            color: white;
+        }
+
+        .btn-rate {
+            background-color: #ff9800;
+        }
+
+        .btn-complain {
+            background-color: #f44336;
+        }
+
+        .btn-rate:hover {
+            background-color: #f57c00;
+        }
+
+        .btn-complain:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Hidden Forms */
+        .hidden-form {
+            display: none;
+            margin-top: 15px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .form-row {
+            margin-bottom: 10px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .form-row textarea,
+        .form-row select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background: #333;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Icon colors */
+        .u-icon-green {
+            color: #16a34a;
+            margin-right: 5px;
+        }
+
+        /* Mobile Responsive adjustment */
+        @media (max-width: 600px) {
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-actions {
+                width: 100%;
+                justify-content: flex-start;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="user-info">
+            <div class="user-main">
+                <div class="avatar">{{ user.name[0] }}</div>
+                <div class="details">
+                    <h3>{{ user.name }}</h3>
+                    <p>{{ user.email }}</p>
+                    {% if user.phone %}
+                    <p><i class="fa-solid fa-phone u-icon-green"></i> {{ user.phone }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="user-actions">
+                <a href="/edit-profile" class="header-btn btn-edit">
+                    <i class="fa-solid fa-pen"></i> Edit Profile
+                </a>
+                <a href="/services" class="header-btn btn-back">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+            </div>
+        </div>
+
+        <h2>My Bookings</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div
+            class="auto-flash u-profile-flash {% if category == 'success' %}u-flash-success{% else %}u-flash-error{% endif %}">
+            <i class="fa-solid fa-{{ 'circle-check' if category == 'success' else 'circle-exclamation' }}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% if bookings %}
+        {% for booking in bookings %}
+        <div class="booking-card">
+            <div class="booking-header">
+                <span class="service-name">{{ booking.service_name }}</span>
+                <span class="status-badge status-{{ booking.status|lower }}">{{ booking.status }}</span>
+            </div>
+
+            <div class="booking-body">
+                <p><i class="fa-regular fa-calendar"></i> {{ booking.service_date }} at {{ booking.service_time }}</p>
+                <p><i class="fa-solid fa-user-tie"></i>
+                    {% if booking.professional_name %}
+                    Assigned to: <strong>{{ booking.professional_name }}</strong>
+                    {% else %}
+                    <span class="u-color-gray-888">Searching for professional...</span>
+                    {% endif %}
+                </p>
+                <p><i class="fa-solid fa-indian-rupee-sign"></i> ₹{{ booking.price }}</p>
+
+                {% if booking.rating %}
+                <p class="u-star-color">
+                    <i class="fa-solid fa-star"></i> You rated: <strong>{{ booking.rating }}/5</strong>
+                </p>
+                {% endif %}
+
+                {% if booking.complaint_status %}
+                <p class="u-danger-text">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Complaint: {{ booking.complaint_status }}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="actions">
+                {% if booking.status == 'Completed' and not booking.rating %}
+                <button type="button" class="btn btn-rate" onclick="toggleForm('rate-{{ booking.id }}')">
+                    <i class="fa-regular fa-star"></i> Rate Service
+                </button>
+                {% elif booking.status == 'Completed' %}
+                <button type="button" class="btn btn-disabled">Rated</button>
+                {% endif %}
+
+                {% if not booking.complaint_status and booking.status != 'Cancelled' %}
+                <button type="button" class="btn btn-complain" onclick="toggleForm('complain-{{ booking.id }}')">
+                    <i class="fa-solid fa-circle-exclamation"></i> Report Issue
+                </button>
+                {% endif %}
+                {% if booking.status == 'Pending' or booking.status == 'Assigned' %}
+                <form action="/cancel-booking/{{ booking.id }}" method="POST" class="u-inline"
+                    onsubmit="return confirm('Are you sure you want to cancel?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn u-btn-cancel">
+                        <i class="fa-solid fa-ban"></i> Cancel
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if booking.status == 'Completed' or booking.status == 'Cancelled' %}
+                <a href="/rebook/{{ booking.service_id }}" class="btn u-link-btn-blue">
+                    <i class="fa-solid fa-rotate-right"></i> Re-book
+                </a>
+                {% endif %}
+            </div>
+
+            <div id="rate-{{ booking.id }}" class="hidden-form">
+                <form action="/submit-rating" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                    <div class="form-row">
+                        <label>Star Rating</label>
+                        <select name="rating" required>
+                            <option value="5">★★★★★ (Excellent)</option>
+                            <option value="4">★★★★☆ (Good)</option>
+                            <option value="3">★★★☆☆ (Average)</option>
+                            <option value="2">★★☆☆☆ (Poor)</option>
+                            <option value="1">★☆☆☆☆ (Terrible)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>Review</label>
+                        <textarea name="review" rows="2" placeholder="Write your experience..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Review</button>
+                </form>
+            </div>
+
+            <div id="complain-{{ booking.id }}" class="hidden-form">
+                <form action="/submit-complaint" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                    <div class="form-row">
+                        <label>Describe your issue</label>
+                        <textarea name="complaint" rows="3" required
+                            placeholder="Worker was late, rude behavior, etc..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn submit-btn u-submit-btn-danger">File Complaint</button>
+                </form>
+            </div>
+
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="u-text-center u-p-10">
+            <div class="u-emoji-lg">📋</div>
+            <h3 class="u-color-gray">No bookings yet</h3>
+            <p class="u-color-gray-888 u-fs-14 u-mb-25">Looks like you haven't booked any services. Let's
+                fix that!</p>
+            <a href="/services" class="u-link-btn-green-lg">
+                <i class="fa-solid fa-plus"></i> Book Your First Service
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="u-flex-center u-text-center u-mt-30"></div>
+
+        <a href="/services" class="btn btn u-link-btn-green">
+            <i class="fa-solid fa-plus"></i> Book New Service
+        </a>
+
+        <a href="/logout" class="btn btn u-link-btn-dark">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
+
+        <a href="javascript:history.back()" class="btn btn u-link-btn-gray">
+            <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function toggleForm(id) {
+            var form = document.getElementById(id);
+            if (form.style.display === "block") {
+                form.style.display = "none";
+            } else {
+                document.querySelectorAll('.hidden-form').forEach(f => f.style.display = 'none');
+                form.style.display = "block";
+            }
+        }
+
+        // Flash auto-dismiss after 4 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.auto-flash').forEach(el => {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 500);
+            });
+        }, 4000);
+
+        // Session idle timeout — warn at 18 min, logout at 20 min
+        let idleTimer, warnTimer;
+        const WARN_MS = 18 * 60 * 1000;  // 18 minutes
+        const LOGOUT_MS = 20 * 60 * 1000;  // 20 minutes
+
+        function resetIdle() {
+            clearTimeout(idleTimer);
+            clearTimeout(warnTimer);
+            warnTimer = setTimeout(() => {
+                Swal.fire({
+                    title: 'Still there?',
+                    text: 'You will be logged out in 2 minutes due to inactivity.',
+                    icon: 'warning',
+                    timer: 120000,
+                    timerProgressBar: true,
+                    confirmButtonText: 'Keep me logged in',
+                    confirmButtonColor: '#4CAF50',
+                }).then(r => { if (r.isConfirmed) resetIdle(); });
+            }, WARN_MS);
+            idleTimer = setTimeout(() => { window.location.href = '/logout'; }, LOGOUT_MS);
+        }
+
+        ['mousemove', 'keydown', 'click', 'touchstart', 'scroll'].forEach(e =>
+            document.addEventListener(e, resetIdle, { passive: true })
+        );
+        resetIdle();
+    </script>
+
+</body>
+
+</html>

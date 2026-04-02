@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Partner Login | Fix Buddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="login-page-bg">
+
+    <nav class="u-nav-fixed-dark">
+        <div class="u-nav-inner">
+            <a href="/" class="u-nav-link-muted">Customer</a>
+            <a href="/admin-login" class="u-nav-link-muted">Admin Login</a>
+            <a href="/employee-login" class="u-nav-link-blue">Employee</a>
+        </div>
+    </nav>
+
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h1 class="brand-name u-link-blue">Partner Portal</h1>
+            <p class="subtitle">Login to view your assigned jobs.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="auth-error-text">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('employee_login') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="auth-input-group">
+                    <input type="email" name="email" placeholder="Registered Email" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="auth-primary-btn u-btn-blue">Login to Dashboard</button>
+            </form>
+
+            <p class="switch-auth-text">
+                Want to join us? <a href="/employee-register" class="u-link-blue">Register as a Professional</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

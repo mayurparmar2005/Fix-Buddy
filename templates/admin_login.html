@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Fix Buddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="login-page-bg">
+
+    <nav class="u-nav-fixed-dark">
+        <div class="u-nav-inner">
+            <a href="/" class="u-nav-link-muted">Customer</a>
+            <a href="/admin-login" class="u-nav-link-active">Admin Login</a>
+            <a href="/employee-login" class="u-nav-link-muted">Employee</a>
+        </div>
+    </nav>
+
+    <div class="login-wrapper">
+        <div class="login-box">
+            <h1 class="brand-name u-color-admin-red">Admin Portal</h1>
+            <p class="subtitle">Enter your administrative credentials.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="auth-error-text">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('admin_login') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="auth-input-group">
+                    <input type="text" name="username" placeholder="Admin Username" required>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="auth-primary-btn u-btn-red">Login to Dashboard</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
