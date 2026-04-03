@@ -23,6 +23,7 @@ QUICK START
 2. Create the database in phpMyAdmin:
      CREATE DATABASE fix_buddy;
    Then import fix_buddy.sql if available.
+   Then import seed_employees.sql if available.
 
 3. Copy environment file:
      Copy .env and edit credentials if needed:
