@@ -5,6 +5,7 @@ A Flask + MySQL web application for booking home services (cleaning,
 plumbing, electrician, beauty/salon, etc.) with customer, employee, 
 and admin portals.
 
+This project is hosted on pythonanywhere.com you can visit our side: https://fixbuddy04.pythonanywhere.com/
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 TECH STACK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
