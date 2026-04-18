@@ -1,141 +1,53 @@
-Fix Buddy — Home Services Application
-======================================
+# 🛠️ Fix Buddy — Home Services Marketplace
 
-A Flask + MySQL web application for booking home services (cleaning, 
-plumbing, electrician, beauty/salon, etc.) with customer, employee, 
-and admin portals.
+FixBuddy is a robust, full-stack web application designed to connect homeowners with skilled service professionals like cleaners, plumbers, and electricians. Built using the **Flask** framework and a MySQL backend, it features a complete service lifecycle—from discovery to secure payment and automated assignment.
 
-This project is hosted on pythonanywhere.com you can visit our side: https://fixbuddy04.pythonanywhere.com/
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-TECH STACK
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Backend  : Python 3 / Flask
-  Database : MySQL (via XAMPP / mysql-connector-python)
-  Email    : Flask-Mail → Gmail SMTP
-  Frontend : Vanilla HTML + CSS + JS (Font Awesome, SweetAlert2)
-  Security : werkzeug password hashing (pbkdf2:sha256)
-  Config   : python-dotenv (.env file)
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-QUICK START
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-1. Start XAMPP → Apache + MySQL
 
-2. Create the database in phpMyAdmin:
-     CREATE DATABASE fix_buddy;
-   Then import fix_buddy.sql if available.
-   Then import seed_employees.sql if available.
+---
 
-3. Copy environment file:
-     Copy .env and edit credentials if needed:
-       SECRET_KEY   = any long random string
-       DB_PASSWORD  = your MySQL root password (blank for XAMPP default)
-       MAIL_PASSWORD = your Gmail app password
+## 🚀 Live Demo & Video:
+Live Website: https://fixbuddy04.pythonanywhere.com
+Demo Video: https://drive.google.com/file/d/1vJNwtp5o4efqM9kt1CP1GtwhKShGL9FM/view?usp=share_link
 
-4. Install dependencies:
-     pip install flask flask-mail mysql-connector-python werkzeug
-                 python-dotenv qrcode pillow sweetalert2
+---
 
-5. Run the app:
-     python app.py
-   Then open: http://127.0.0.1:5000
+## 💻 Tech Stack
+Backend: Python 3 / Flask
+Database: MySQL (via XAMPP / mysql-connector-python)
+Security: Werkzeug Password Hashing (pbkdf2:sha256)
+Email: Flask-Mail (Gmail SMTP Integration)
+Frontend: Vanilla HTML5, CSS3 (Premium Glassmorphism), JavaScript
+Libraries: `qrcode`, `pillow`, `python-dotenv`, `sweetalert2`
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PORTALS & ROUTES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-CUSTOMER
-  /                 Customer login
-  /register         Customer sign-up (name, email, phone, password)
-  /forgot-password  Request password reset email
-  /reset-password/  Set new password via token link
-  /services         Browse & search services, add to cart
-  /profile          View bookings, rate, re-book, file complaint
-  /edit-profile     Update name, phone, password
-  /success          Post-payment receipt page
+---
 
-ADMIN (login: /admin-login)
-  /admin-dashboard  Revenue, bookings, staff stats overview
-  /admin-professionals  Manage professionals (activate/deactivate)
-  /admin-complaints  View & resolve customer complaints
-  /admin-export-csv  Download all bookings as fix_buddy_bookings.csv
+## ✨ Key Features
+Advanced Cart: Real-time total calculation with a responsive, expandable item list.
+UPI Payments: Dynamic QR code generation for secure, frictionless payments.
+Smart Assignment: Automatic professional assignment immediately after booking confirmation.
+Automated Alerts: Instant email receipts sent via Flask-Mail upon booking.
+Security First: 1-hour expiry tokens for password resets and 20-minute idle session timeouts.
+Admin Power: Export booking records to CSV and manage professionals or customer complaints from a central dashboard.
 
-EMPLOYEE (login: /employee-login)
-  /employee-dashboard  View assigned bookings, update status
+---
 
-OTHER
-  /about            About page
-  /logout           Clear session and redirect to login
+## 🛠️ Installation & Setup
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-KEY FEATURES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✔ Cart with add/remove, expandable item list, real-time total
-✔ Dynamic UPI QR code payment (qrcode lib)
-✔ Professional auto-assignment after booking
-✔ Email receipt on booking confirmation (Flask-Mail)
-✔ Password reset via email token (1-hour expiry)
-✔ Employee passwords hashed with pbkdf2:sha256
-✔ Customer: edit profile, re-book, rate service, file complaints
-✔ Admin: CSV export, complaints management, staff control
-✔ Mobile-responsive navbar with hamburger menu
-✔ Loading spinner on booking form submission
-✔ Flash message auto-dismiss (4-second fade)
-✔ Session idle timeout warning (SweetAlert2, 20-minute logout)
-✔ Custom 404 and 500 error pages
-✔ Lazy-loaded service images
+1. Database Setup:
+   * Start XAMPP (Apache + MySQL).
+   * Create a database: `CREATE DATABASE fix_buddy;`.
+   * Import `fix_buddy.sql` and `seed_employees.sql`.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DEFAULT ADMIN CREDENTIALS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Username : admin
-  Password : admin123
-  ⚠ Change these in app.py before production!
+2. Environment Configuration:
+   * Create a `.env` file in the root directory:
+     ```env
+     SECRET_KEY=your_random_secret_key
+     DB_PASSWORD=your_mysql_password
+     MAIL_PASSWORD=your_gmail_app_password
+     MAIL_USERNAME=your_email@gmail.com
+     ```
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ENVIRONMENT (.env)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  SECRET_KEY       Flask session secret key
-  DB_HOST          Database host (default: localhost)
-  DB_USER          Database user (default: root)
-  DB_PASSWORD      Database password (default: blank)
-  DB_NAME          Database name (default: fix_buddy)
-  MAIL_USERNAME    Gmail address for outgoing emails
-  MAIL_PASSWORD    Gmail app password (16-char)
-  MAIL_DEFAULT_SENDER  Sender display address
-
-IMPORTANT: .env is listed in .gitignore and must NEVER be committed.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DATABASE TABLES
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  users             Customer accounts
-  professionals     Employee accounts
-  services          Service catalog
-  bookings          All booking records
-  password_resets   Token-based reset requests (auto-created)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PROJECT STRUCTURE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  app.py               Main Flask application
-  .env                 Environment variables (secrets)
-  .gitignore           Files excluded from version control
-  templates/           All Jinja2 HTML templates
-    index.html         Customer login
-    register.html      Customer sign-up
-    forgot_password.html  Forgot password request
-    reset_password.html   New password form
-    services.html      Main services + cart page
-    profile.html       Customer bookings + actions
-    edit_profile.html  Edit name, phone, password
-    booking_details.html  Address + schedule form
-    fake_qr.html       UPI QR payment page
-    success.html       Post-payment receipt
-    admin_dashboard.html  Admin overview
-    admin_professionals.html  Staff management
-    admin_complaints.html  Complaints management
-    employee_dashboard.html  Employee view
-    404.html / 500.html   Custom error pages
-  static/
-    css/style.css      Global stylesheet
-    images/            Logo and service images
+3. Install Dependencies:
+   ```bash
+   pip install flask flask-mail mysql-connector-python werkzeug python-dotenv qrcode pillow
